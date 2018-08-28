@@ -184,14 +184,27 @@ function confirm(){
 }
 var authorizeButton = document.getElementById("authorize_button");
 var signoutButton = document.getElementById("signout_button");
-
+var API_KEY;
+var CLIENT_ID;
 function handleClientLoad() {
-        gapi.load('client:auth2', initClient);
+
+    var config = firebase.database().ref("config");
+      config.once("value").then(function(snapshot) {
+      API_KEY = snapshot.val().GoogleAPIKey;
+      CLIENT_ID = snapshot.val().GoogleClientId;
+     
+
+      gapi.load('client:auth2', initClient);
+
+    });
+        
+
 }
 function initClient() {
   var authorizeButton = document.getElementById("authorize_button");
   var signoutButton = document.getElementById("signout_button");
-  console.log("authorizeButton" + authorizeButton);
+   console.log("CLIENT_ID is " + CLIENT_ID);
+      console.log("API API_KEY is " + API_KEY);
         gapi.client.init({
           apiKey: API_KEY,
           clientId: CLIENT_ID,

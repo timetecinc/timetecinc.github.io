@@ -1,3 +1,5 @@
+var shipmentID;
+var sheetValueTable=[];
 function getInfo (){
  $( "#myTableBody" ).empty();
  $( "#mycostTableBody" ).empty();
@@ -6,6 +8,7 @@ function getInfo (){
  document.getElementById("mainTable").style.visibility = "visible";
  document.getElementById("costTable").style.visibility = "visible";
  document.getElementById("costTableTitle").style.visibility = "visible";
+ document.getElementById("signin-button").style.visibility = "visible";
   var fileInput = document.getElementById('tsv');
  
   var tsvFile = fileInput.files[0];
@@ -38,9 +41,9 @@ function getInfo (){
   var Type = "";
   var totalPrice =0;
   var costTable = []; 
-  var speetValueTable=[];
-  var shipmentID = lines[0].split('\t')[0];
-
+  
+  shipmentID = lines[0].split('\t')[1] + " Shipping Slip";
+  console.log("shipmentID " + shipmentID);
   //=========Star decode file===========================================================
   for (var i = 0; i<lines.length -1; i++){
     //get baic info
@@ -48,8 +51,11 @@ function getInfo (){
 
       $("#info").append(lines[i]+"<br>");
       var temp = [];
-      temp.push(lines[i]);
-      speetValueTable.push(temp);
+      for (var a = 0; a<lines[i].split('\t').length; a++){
+        temp.push(lines[i].split('\t')[a].replace(/(\r\n|\n|\r)/gm,""));
+      }
+      //console.log("table pushed " + lines[i]);
+      sheetValueTable.push(temp);
     }else if (i>=9){
     // deal with sorting
     var line = lines[i].split('\t');//split tab
@@ -102,8 +108,9 @@ function getInfo (){
     singlePrice = getPrice(singleSKU,dataBase);
     singleWeight = getWeight(singleSKU,dataBase);
     dataTable[i] = {SKU:sku,FNSKU: FNSKU, shipped:shippedQTY,Item:item,QTY:totalUnitQTY,ID:id};
-    
-    
+    var sheetLine = [];
+ 
+
     if(costTable[Type] != null ){
       costTable[Type] = {singlePrice:singlePrice,singleWeight:singleWeight,typeTotalUnitQTY:costTable[Type].typeTotalUnitQTY+(shippedQTY * kitNum) };
     }else{
@@ -118,8 +125,20 @@ function getInfo (){
       +totalUnitQTY+'</td><td>'
       +id+'</td><td>'
       +card+'</td><td>'
-      +reviewCard+'</td><td>'); 	
+      +reviewCard+'</td><td>'); 
 
+    sheetLine.push(sku);
+    sheetLine.push(FNSKU);
+    sheetLine.push(shippedQTY);
+    sheetLine.push(item);
+    sheetLine.push(totalUnitQTY);
+    sheetLine.push(id);
+    sheetLine.push(card);
+    sheetLine.push(reviewCard);
+    sheetValueTable.push(sheetLine);
+
+ }else if(i == 8){
+  sheetValueTable.push(["Merchant SKU","FNSKU","Shipped","Item","QTY","ID", "Card", "Review","Name"]);
  }
 }
  console.log(dataTable);
@@ -189,10 +208,20 @@ function getWeight(item){
     return 'Not Found'; 
   }
 }
-
+ var CLIENT_ID;
+ var API_KEY;
 function handleClientLoad() {
+  
+    var config = firebase.database().ref("config");
+      config.once("value").then(function(snapshot) {
+      API_KEY = snapshot.val().GoogleAPIKey;
+      CLIENT_ID = snapshot.val().GoogleClientId;
       gapi.load('client:auth2', initClient);
+      
+    });
+      
 }
+
 function initClient() {
       
       // TODO: Authorize using one of the following scopes:
@@ -229,7 +258,7 @@ function initClient() {
       var spreadsheetBody = {
         // TODO: Add desired properties to the request body.
         properties:{
-          title:shipmentID + " Shipping Slip"
+          title:shipmentID,
         }
       };
 
@@ -247,23 +276,24 @@ function initClient() {
    function appendValue(sheetID) {
       var params = {
         // The ID of the spreadsheet to update.
-        spreadsheetId: 'my-spreadsheet-id',  // TODO: Update placeholder value.
+        spreadsheetId: sheetID,  // TODO: Update placeholder value.
 
         // The A1 notation of a range to search for a logical table of data.
         // Values will be appended after the last row of the table.
         range: 'A:Z',  // TODO: Update placeholder value.
 
         // How the input data should be interpreted.
-        valueInputOption: 'USER_ENTERD',  // TODO: Update placeholder value.
+        valueInputOption: 'USER_ENTERED',  // TODO: Update placeholder value.
 
         // How the input data should be inserted.
         insertDataOption: 'OVERWRITE',  // TODO: Update placeholder value.
       };
-
+      console.log("table value is " + sheetValueTable);
       var valueRangeBody = {
         // TODO: Add desired properties to the request body.
         majorDimension: "ROWS",
-        values:speetValueTable
+        values:sheetValueTable
+
       };
 
       var request = gapi.client.sheets.spreadsheets.values.append(params, valueRangeBody);

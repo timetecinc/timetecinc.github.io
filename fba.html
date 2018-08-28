@@ -27,16 +27,7 @@
   });
     //console.log("dataBase is (in head) " + dataBase);
   });
-    var CLIENT_ID;
-    var API_KEY;
-    var config = firebase.database().ref("config");
-      config.once("value").then(function(snapshot) {
-      API_KEY = snapshot.val().GoogleAPIKey;
-      CLIENT_ID = snapshot.val().GoogleClientId;
-      
-    });
-
-
+   
   </script>
 
   <title>Memory Listing Generator</title>
@@ -69,7 +60,7 @@
             <label for="avatar">TSV File:</label>
             <input type="file" id="tsv" name="fbatsv"/>
             <button id="submitBtn" type ="submit" class="btn btn-primary">Submit</button>
-            <button id="signin-button" onclick="handleSignInClick()">Send to SpreadSheet</button>
+           
           </div>
         <br>
 
@@ -79,6 +70,9 @@
         </form>
 
         <br>
+        <div>
+          <button id="signin-button" class="btn btn-primary" style="visibility: hidden" onclick="handleSignInClick()">Send to SpreadSheet</button>
+        </div>
         <div>
          
         <div class="error"></div>

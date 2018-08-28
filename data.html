@@ -16,17 +16,8 @@
   firebase.initializeApp(config);
 
   </script>
-  <script type="text/javascript">
-    var CLIENT_ID;
-    var API_KEY;
-    var config = firebase.database().ref("config");
-      config.once("value").then(function(snapshot) {
-      API_KEY = snapshot.val().GoogleAPIKey;
-      CLIENT_ID = snapshot.val().GoogleClientId;
-      
-    });
 
-  </script>
+
 
 	<title>Return Inbound System</title>
 	
@@ -122,10 +113,11 @@
 
 </div>
 <script src="scripts/nav.js"></script>
-   <script async defer src="https://apis.google.com/js/api.js"
-      onload="this.onload=function(){};handleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') this.onload()">
-    </script>
+<script async defer src="https://apis.google.com/js/api.js"
+onload="this.onload=function(){};handleClientLoad()"
+onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    
+</script>
 </body>
 
 </html>
