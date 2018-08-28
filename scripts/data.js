@@ -15,7 +15,7 @@ $("#unTestedTable").hide();
 
 var ref = firebase.database().ref("RAM");
  ref.once("value").then(function(snapshot) {
-   var tr="<thead><th>ID</th><th>SKU</th><th>ASIN</th><th>Inventory</th><th>Price</th><th>Weigth</th></thead><tbody>";
+   var tr="<thead><th>ID</th><th>SKU</th><th>ASIN</th><th>Inventory</th><th>Price CND</th><th>Weigth lb</th></thead><tbody>";
     $("#myTable").append(tr); 
 
       snapshot.forEach(function(childSnapShot){
