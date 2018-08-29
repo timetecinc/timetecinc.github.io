@@ -143,7 +143,7 @@ function getInfo (){
 }
  console.log(dataTable);
  console.log(costTable);
- sheetValueTable.push([]);
+ sheetValueTable.push([""]);
  sheetValueTable.push(["Cost Table"]);
  var totalCost=0;
  var totalWeight=0;
@@ -169,7 +169,7 @@ function getInfo (){
  $("#total").append("Total Cost: " + totalCost.toFixed(2) + "  Total Weight: "+totalWeight.toFixed(2)); 
  sheetValueTable.push(["Total Cost: ",totalCost.toFixed(2),"  Total Weight: ",totalWeight.toFixed(2)]);
  };
-
+ console.log("sheet Values table done " + sheetValueTable);
  fr.readAsText(tsvFile);
 
 
