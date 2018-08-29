@@ -167,8 +167,9 @@ function getInfo (){
  	sheetValueTable.push(costTableLine);
  }
  $("#total").append("Total Cost: " + totalCost.toFixed(2) + "  Total Weight: "+totalWeight.toFixed(2)); 
- };
  sheetValueTable.push(["Total Cost: ",totalCost.toFixed(2),"  Total Weight: ",totalWeight.toFixed(2)]);
+ };
+
  fr.readAsText(tsvFile);
 
 
