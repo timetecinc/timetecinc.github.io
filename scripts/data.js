@@ -220,12 +220,13 @@ function initClient() {
           signoutButton.onclick = handleSignoutClick;
         });
 }
-
+var isLoggedIn = false;
 function updateSigninStatus(isSignedIn) {
         if (isSignedIn) {
           //authorizeButton.style.display = 'none';
           //signoutButton.style.display = 'block';
           console.log("isSignedIn");
+          isLoggedIn = true;
           listMajors();
           
         } else {
@@ -234,8 +235,13 @@ function updateSigninStatus(isSignedIn) {
           console.log("isNotSigned")
         }
       }
+
 function handleAuthClick(event) {
-  gapi.auth2.getAuthInstance().signIn();
+  if(isLoggedIn == false){
+    gapi.auth2.getAuthInstance().signIn();
+  }else{
+     listMajors();
+  }
 }
 function handleSignoutClick(event) {
         gapi.auth2.getAuthInstance().signOut();

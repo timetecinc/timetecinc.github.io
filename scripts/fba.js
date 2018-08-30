@@ -257,14 +257,23 @@ function initClient() {
         updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
       });
 }
+	var isloggedIn = false;
     function updateSignInStatus(isSignedIn) {
       if (isSignedIn && sheetValueTable.length > 0) {
+      	console.log("isSignedIn and table is not empty");
+      	isloggedIn = true;
         makeApiCall();
+      } else if (isSignedIn && sheetValueTable.length > 0){
+      	isloggedIn = true;
       }
     }
 
     function handleSignInClick(event) {
-      gapi.auth2.getAuthInstance().signIn();
+    	if(isloggedIn == false){
+      		gapi.auth2.getAuthInstance().signIn();
+  		}else{
+  			makeApiCall();
+  		}
     }
 
     function handleSignOutClick(event) {
