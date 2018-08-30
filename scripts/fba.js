@@ -41,7 +41,7 @@ function getInfo (){
   var Type = "";
   var totalPrice =0;
   var costTable = []; 
-  
+  sheetValueTable=[];
   shipmentID = lines[0].split('\t')[1] + " Shipping Slip";
   console.log("shipmentID " + shipmentID);
   //=========Star decode file===========================================================
@@ -258,7 +258,7 @@ function initClient() {
       });
 }
     function updateSignInStatus(isSignedIn) {
-      if (isSignedIn) {
+      if (isSignedIn && sheetValueTable.length > 0) {
         makeApiCall();
       }
     }
@@ -282,7 +282,7 @@ function initClient() {
       var request = gapi.client.sheets.spreadsheets.create({}, spreadsheetBody);
       request.then(function(response) {
         // TODO: Change code below to process the `response` object:
-        console.log(response.result.spreadsheetId);
+        console.log("created sheet ID " + response.result.spreadsheetId);
         var sheetID = response.result.spreadsheetId;
         appendValue(sheetID);
 
