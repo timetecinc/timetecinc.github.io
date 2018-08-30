@@ -145,6 +145,7 @@ function getInfo (){
  console.log(costTable);
  sheetValueTable.push([""]);
  sheetValueTable.push(["Cost Table"]);
+ sheetValueTable.push(["Type","Unit QTY" ,"Single Cost","Single Weight","Toal Cost", "Total Weight"]);
  var totalCost=0;
  var totalWeight=0;
  for (var x in costTable){
@@ -159,6 +160,7 @@ function getInfo (){
       +(costTable[x].typeTotalUnitQTY * costTable[x].singleWeight).toFixed(2)+'</td><td>');  
       totalCost += costTable[x].typeTotalUnitQTY * costTable[x].singlePrice;
       totalWeight += costTable[x].typeTotalUnitQTY * costTable[x].singleWeight;
+    costTableLine.push(x);
     costTableLine.push(costTable[x].typeTotalUnitQTY);
  	costTableLine.push(costTable[x].singlePrice);
  	costTableLine.push(costTable[x].singleWeight);
@@ -167,9 +169,12 @@ function getInfo (){
  	sheetValueTable.push(costTableLine);
  }
  $("#total").append("Total Cost: " + totalCost.toFixed(2) + "  Total Weight: "+totalWeight.toFixed(2)); 
- sheetValueTable.push(["Total Cost: ",totalCost.toFixed(2),"  Total Weight: ",totalWeight.toFixed(2)]);
- };
+ //sheetValueTable.push(["Total Cost: ",totalCost.toFixed(2),"  Total Weight: ",totalWeight.toFixed(2)]);
+
+
  console.log("sheet Values table done " + sheetValueTable);
+ };
+ 
  fr.readAsText(tsvFile);
 
 
