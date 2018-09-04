@@ -43,7 +43,7 @@ firebase.auth().onAuthStateChanged(function(user) {
        listingPageSelec = "nav-item active";
        
    }
-   else if(current_page == 'fba.html'){
+   else if(current_page == 'fba.html' || current_page == 'FBAPlan.html' ){
        fbaPageSelec = "nav-item active";
    }else if(current_page == 'myProfile.html'){
        $(".navbar #myProfile").addClass('active');
@@ -53,30 +53,35 @@ initialNavBar();
 
 function initialNavBar(){
 document.getElementById("navBar").innerHTML =
-"<nav class='navbar navbar-light bg-faded'>"
- +"<a class='navbar-brand' href='#'>"
+"<nav class='navbar navbar-expand-lg navbar-light bg-light'>"
+ +"<a class='navbar-brand' href='data.html'>"
    +" <img src='image/ICON.png' width='30' height='30' class='d-inline-block align-top' alt=''>"
    + " Timetec Inc</a>"
- +"<ul class='nav navbar-nav'>"
+   +"<button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>"
+   +" <span class='navbar-toggler-icon'></span>"
+   +"</button>"
+   +" <div class='collapse navbar-collapse' id='navbarNavDropdown'>"
+ +"<ul class='navbar-nav mr-auto'>"
    + "<li id='dataPage' class='"+dataPageSelec+"'>"
      +"<a class='nav-link' href='data.html'>Memory Data</a>"
     +"</li>"
     +"<li id='listingPage'class='"+listingPageSelec+"'>"
      + "<a class='nav-link' href='listing.html'>Listing</a>"
     +"</li>"
-    +"<li id='listingPage'class='"+fbaPageSelec+"'>"
-     +"<a class='nav-link' href='fba.html'>FBA Shipping Slip</a>"
-    +"</li>"
-    +"<li class='nav-item'>"
-      +"<a class='nav-link' href='#'>About</a>"
-   +"</li>"
-  +" <li class='nav-item dropdown float-xs-right' style='padding-right:100px;'>"
-     +"<a class='nav-link dropdown-toggle' href='http://example.com' id='supportedContentDropdown' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>"+name+"</a>"
-      +"<div class='dropdown-menu' aria-labelledby='supportedContentDropdown'>"
-       +"<a class='dropdown-item' href='#'>Logout</a>"
-       
+   +" <li class='nav-item dropdown'>"
+     +"<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'  >FBA</a>"
+      +"<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>"
+       +"<a class='dropdown-item' href='FBAPlan.html'>FBA Shipping Plan</a>"
+       +"<a class='dropdown-item' href='fba.html'>FBA Shipping Slip</a>"
       +"</div>"
     +"</li>"
-  +"</ul>"
+  +" <li class='nav-item dropdown'>"
+     +"<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'  >"+name+"</a>"
+      +"<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>"
+       +"<a class='dropdown-item' href='#'>Logout</a>"
+      +"</div>"
+    +"</li>"
+    +"</ul>"
+    +"</div>"
 +"</nav>";
 }

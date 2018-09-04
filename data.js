@@ -15,7 +15,7 @@ $("#unTestedTable").hide();
 
 var ref = firebase.database().ref("RAM");
  ref.once("value").then(function(snapshot) {
-   var tr="<thead><th>ID</th><th>SKU</th><th>ASIN</th><th>Inventory</th><th>Price</th><th>Weigth</th></thead><tbody>";
+   var tr="<thead><th>ID</th><th>SKU</th><th>ASIN</th><th>Inventory</th><th>Price CND</th><th>Weigth lb</th></thead><tbody>";
     $("#myTable").append(tr); 
 
       snapshot.forEach(function(childSnapShot){
@@ -184,16 +184,27 @@ function confirm(){
 }
 var authorizeButton = document.getElementById("authorize_button");
 var signoutButton = document.getElementById("signout_button");
-
+var API_KEY;
+var CLIENT_ID;
 function handleClientLoad() {
-        gapi.load('client:auth2', initClient);
-        console.log("authorizeButton" + CLIENT_ID);
-        console.log("authorizeButton" + API_KEY);
+
+    var config = firebase.database().ref("config");
+      config.once("value").then(function(snapshot) {
+      API_KEY = snapshot.val().GoogleAPIKey;
+      CLIENT_ID = snapshot.val().GoogleClientId;
+     
+
+      gapi.load('client:auth2', initClient);
+
+    });
+        
+
 }
 function initClient() {
   var authorizeButton = document.getElementById("authorize_button");
   var signoutButton = document.getElementById("signout_button");
-  
+   console.log("CLIENT_ID is " + CLIENT_ID);
+      console.log("API API_KEY is " + API_KEY);
         gapi.client.init({
           apiKey: API_KEY,
           clientId: CLIENT_ID,
@@ -209,12 +220,13 @@ function initClient() {
           signoutButton.onclick = handleSignoutClick;
         });
 }
-
+var isLoggedIn = false;
 function updateSigninStatus(isSignedIn) {
         if (isSignedIn) {
           //authorizeButton.style.display = 'none';
           //signoutButton.style.display = 'block';
           console.log("isSignedIn");
+          isLoggedIn = true;
           listMajors();
           
         } else {
@@ -223,8 +235,13 @@ function updateSigninStatus(isSignedIn) {
           console.log("isNotSigned")
         }
       }
+
 function handleAuthClick(event) {
-  gapi.auth2.getAuthInstance().signIn();
+  if(isLoggedIn == false){
+    gapi.auth2.getAuthInstance().signIn();
+  }else{
+     listMajors();
+  }
 }
 function handleSignoutClick(event) {
         gapi.auth2.getAuthInstance().signOut();
