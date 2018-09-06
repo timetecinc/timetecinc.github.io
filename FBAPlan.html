@@ -38,8 +38,9 @@
           <div class="jumbotron">
             <h1 class="display-4">FBA Shipment Planer</h1>
             <p class="lead">This planer gets "Restock Inventory" report from Amazon and suggest shipment QTY for next 30 days</p>
+            <p>Suggest Shipment QTY = (Sales - FBA inventory) * 1.2</p>
             <hr class="my-4">
-            <a class="btn btn-primary btn-lg" id="getButton" href="#" role="button" onclick="getReadyReportRequestList()">Get Plan</a>
+            <a class="btn btn-primary btn-lg" id="getButton" href="#" role="button" onclick="getReadyReportRequestList()">Log in Google Account</a>
             <a class="btn btn-success btn-lg" id="sendButton" style="visibility: hidden" href="#" role="button" onclick="handleSignInClick()">Send to Shipment Request Sheet</a>
             <div id="txtHint"></div>
           </div>

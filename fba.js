@@ -263,18 +263,15 @@ function initClient() {
       	console.log("isSignedIn and table is not empty");
       	isloggedIn = true;
         makeApiCall();
-      } else if (isSignedIn && sheetValueTable.length == 0){
+      } else if (isSignedIn && sheetValueTable.length > 0){
       	isloggedIn = true;
-      	console.log("update sigin statue = ture and make Api Call");
       }
     }
 
     function handleSignInClick(event) {
     	if(isloggedIn == false){
       		gapi.auth2.getAuthInstance().signIn();
-      		console.log("logged in = false and sign in");
   		}else{
-  			console.log("logged in = ture and make Api Call");
   			makeApiCall();
   		}
     }

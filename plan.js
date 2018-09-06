@@ -8,6 +8,7 @@ function requestAReport(callback) {
             if (this.readyState == 4 && this.status == 200) {
                 document.getElementById("txtHint").innerHTML = this.responseText;
                 $("#txtHint").append("\nJust sent a request. Please wait 10s then click again" );
+                document.getElementById('getButton').firstChild.data = "Wait for 10s";
                 isSendRequest = true;
                 requestReportID = this.responseText;
                 callback();
@@ -20,7 +21,13 @@ function requestAReport(callback) {
 }
 
 function getReadyReportRequestList() {
-
+        if(isloggedIn == false){
+          gapi.auth2.getAuthInstance().signIn();
+          
+      }else{
+        //appendValue('1FlVjDCLZd9zzQ457WshMDTtzz_iMt-aEV0T9DGH-phY');
+        
+        getLocalInv();
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
@@ -33,29 +40,25 @@ function getReadyReportRequestList() {
                         console.log("resquest Id " + requestReportID);
                         console.log("is Requested" + isSendRequest);
 
-                        /*setTimeout(function(){
-                        console.log("Waiting");
-                        }, 15000);*/
-                        //getReadyReportRequestList();
                     });
                    
-                    /*setTimeout(function(){
-                        console.log("Waiting");
-                    }, 15000);
-                    getReadyReportRequestList();*/
+
                 }else if (this.responseText.includes("None") && isSendRequest == true){
                     console.log("still not found");
+                    document.getElementById('getButton').firstChild.data = "Wait for 10s";
                     $("#txtHint").append("\nStill waiting for the report from Amazon. Please wait 10s then click again" );
                     //getReadyReportRequestList();
                 }else{
                     reportID = this.responseText.split ( "!" )[1].replace ( /[^\d.]/g, '');
                     console.log("reportID " + reportID);
+                    document.getElementById('getButton').firstChild.data = "Done";
                     getReadyReport();
                 }
             }
         };
         xmlhttp.open("GET", "MarketplaceWebService/Samples/GetReportRequestListSample.php?requestID=" + requestReportID, true);
         xmlhttp.send();
+      }
     
 }
 
@@ -75,6 +78,7 @@ function getReadyReportList() {
     
 }
 var globalPlanTable;
+
 function getReadyReport() {
         console.log("ReportID " + reportID);
         var xmlhttp = new XMLHttpRequest();
@@ -86,6 +90,7 @@ function getReadyReport() {
                 var result = this.responseText;
                 globalPlanTable = getUsefulData(result);
                 pushToTable(globalPlanTable);
+                
 
             }
         };
@@ -128,16 +133,18 @@ function getUsefulData(result){
    return plan;
 
 }
+
 function pushToTable(planTable){
  
   
   for (var x in planTable){
+  var temp = planTable[x].SKU.split('.')[0].split('K')[0];
 	$("#myTableBody").append('<tr><td>'
       +planTable[x].SKU+'</td><td>'
       +planTable[x].ASIN+'</td><td>'
       +planTable[x].FBAInv+'</td><td>'
       +planTable[x].SalesUnits+'</td><td>'
-      +0+'</td><td>'
+      +localInvTable[temp]+'</td><td>'
       +planTable[x].suggestUnits+'</td><td>'
       +"<input type='text' id='"+x+"' size='4'>"+"</td><td>"
       +"<p data-placement='top' data-toggle='tooltip' title='Delete'><button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></p>"
@@ -219,6 +226,7 @@ function updateSignInStatus(isSignedIn) {
       } else if (isSignedIn && readyToSend == false ){
       	isloggedIn = true;
       	console.log("isSignedIn and table is empty");
+        document.getElementById('getButton').firstChild.data = "Get Plan";
       }
     }
 
@@ -228,6 +236,7 @@ function handleSignInClick(event) {
 
   		}else{
   			appendValue('1FlVjDCLZd9zzQ457WshMDTtzz_iMt-aEV0T9DGH-phY');
+  			
   		}
 }
 
@@ -235,7 +244,7 @@ function handleSignOutClick(event) {
       gapi.auth2.getAuthInstance().signOut();
 }
 
- function appendValue(sheetID) {
+function appendValue(sheetID) {
  	  var sheetValueTable = readyDataToSheet();
       var params = {
         // The ID of the spreadsheet to update.
@@ -267,3 +276,23 @@ function handleSignOutClick(event) {
         console.error('error: ' + reason.result.error.message);
       });
     }
+   var localInvTable = [];
+   function getLocalInv() {
+        gapi.client.sheets.spreadsheets.values.get({
+          spreadsheetId: '1Tz5Scf0dLG1XcozUghbCWfezSxxS7UVwdj5d3BaDYqs',
+          range: 'Master!D3:E',
+        }).then(function(response) {
+          var range = response.result;
+          if (range.values.length > 0) {
+            for (i = 0; i < range.values.length; i++) {
+              var row = range.values[i];
+              // Print columns A and E, which correspond to indices 0 and 4.
+              localInvTable[row[0]]=row[1];
+            }
+          } else {
+            console.log("no data from PC 2018");
+          }
+        }, function(response) {
+          appendPre('Error: ' + response.result.error.message);
+        });
+      }
