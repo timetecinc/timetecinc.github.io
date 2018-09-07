@@ -467,7 +467,7 @@ function updateSignInStatus(isSignedIn) {
         console.log("response.result sheetID" + newSheetID);
       }, function(reason) {
         console.error('error: ' + reason.result.error.message);
-        appendPre('Error: ' + reason.result.error.message);
+        appendPre('Error:'+ reason.result.error.message);
       });
     }
 
@@ -581,6 +581,12 @@ function updateSignInStatus(isSignedIn) {
         console.log(response.result);
       }, function(reason) {
         console.error('error: ' + reason.result.error.message);
-        appendPre('Error: ' + reason.result.error.message);
+        appendPre('Error: '+ reason.result.error.message);
       });
     }
+
+  function appendPre(message) {
+        var pre = document.getElementById('content');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
+  }
