@@ -44,9 +44,14 @@
 <body>
   <div id="navBar"></div>
   <div class="container">
+    
     <div class="jumbotron">
-      <h1 class="display-3">FBA Shipping Slip Generator</h1>
+      <div class="col-md-12">
+      <h1 class="display-4">FBA Shipping Slip Generator</h1>
+      <p class="lead">This generator need the SKU list tsv file from Amazon</p>
+      <hr class="my-4" >
       <br>
+
       <button id="signin-button" class="btn btn-primary" onclick="handleSignInClick()">Log in Google Account</button>
       <form onsubmit="return getInfo()">
         <div class ="row">
@@ -79,11 +84,11 @@
          
         <div class="error"></div>
       </div>
-
+      </div>
     </div>
     <!--///////////////////////////////////////Result/////////////////////////////////////////////////////////-->
-    <div class="row">
-      <div >
+    
+      <div class="table-responsive">
       <div id = "info"></div>
        <table class="table" id="mainTable" style="visibility: hidden">
         <thead>
@@ -120,7 +125,7 @@
         </table>
         <div id="total"></div>      
       </div>
-    </div>
+    
       <!--///////////////////////////////////Left colunm//////////////////////////////////////////////////////////////-->
       <pre id="content"></pre>
 
@@ -135,8 +140,8 @@
         <p>Version: 1.20</p>
       </footer>
     </div>
-  </div>
-
+  
+</div>
 <script src="scripts/nav.js"></script>
 <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
