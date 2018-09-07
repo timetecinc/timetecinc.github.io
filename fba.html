@@ -37,7 +37,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-  <script src="fba.js"></script>
+  <script src="scripts/fba.js"></script>
 
   
 </head>
@@ -46,11 +46,12 @@
   <div class="container">
     <div class="jumbotron">
       <h1 class="display-3">FBA Shipping Slip Generator</h1>
-
+      <br>
+      <button id="signin-button" class="btn btn-primary" onclick="handleSignInClick()">Log in Google Account</button>
       <form onsubmit="return getInfo()">
         <div class ="row">
  
-          <div class="col-xs-12 col-md-8">
+          <div class="col-xs-12 col-md-8" id = "fileInputDiv" style="visibility: hidden">
             <br>
             <label for="avatar">TSV File:</label>
             <input type="file" id="tsv" name="fbatsv"/>
@@ -66,8 +67,9 @@
 
         <br>
         <div>
-          <button id="signin-button" class="btn btn-primary" style="visibility: hidden" onclick="handleSignInClick()">Send to SpreadSheet</button>
+          <button id="sendDataBtn" class="btn btn-primary" style="visibility: hidden" onclick="makeApiCall()">Send to SpreadSheet</button>
         </div>
+        <a id="sheetLink"></a>
         <div>
          
         <div class="error"></div>
@@ -89,6 +91,7 @@
             <th>ID</th>
             <th>Card</th>
             <th>Review</th>
+            <th>Local Inventory</th>
           </tr>
         </thead>
         <tbody id="myTableBody">

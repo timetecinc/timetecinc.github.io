@@ -1,3 +1,6 @@
+var shipmentID;
+var sheetValueTable=[];
+
 function getInfo (){
  $( "#myTableBody" ).empty();
  $( "#mycostTableBody" ).empty();
@@ -6,6 +9,7 @@ function getInfo (){
  document.getElementById("mainTable").style.visibility = "visible";
  document.getElementById("costTable").style.visibility = "visible";
  document.getElementById("costTableTitle").style.visibility = "visible";
+ document.getElementById("sendDataBtn").style.visibility = "visible";
   var fileInput = document.getElementById('tsv');
  
   var tsvFile = fileInput.files[0];
@@ -38,9 +42,10 @@ function getInfo (){
   var Type = "";
   var totalPrice =0;
   var costTable = []; 
-  var speetValueTable=[];
-  var shipmentID = lines[0].split('\t')[0];
-
+  var localInv = 0;
+  sheetValueTable=[];
+  shipmentID = lines[0].split('\t')[1] + " Shipping Slip";
+  console.log("shipmentID " + shipmentID);
   //=========Star decode file===========================================================
   for (var i = 0; i<lines.length -1; i++){
     //get baic info
@@ -48,8 +53,11 @@ function getInfo (){
 
       $("#info").append(lines[i]+"<br>");
       var temp = [];
-      temp.push(lines[i]);
-      speetValueTable.push(temp);
+      for (var a = 0; a<lines[i].split('\t').length; a++){
+        temp.push(lines[i].split('\t')[a].replace(/(\r\n|\n|\r)/gm,""));
+      }
+      //console.log("table pushed " + lines[i]);
+      sheetValueTable.push(temp);
     }else if (i>=9){
     // deal with sorting
     var line = lines[i].split('\t');//split tab
@@ -77,7 +85,7 @@ function getInfo (){
      // dataTable[i][3] = singleSKU;
      item = singleSKU;
      id = getID(singleSKU);
-     
+     localInv = localInvTable[singleSKU];
      totalUnitQTY = unitQTY;
      unitQTY = 0;
     }else{
@@ -102,15 +110,25 @@ function getInfo (){
     singlePrice = getPrice(singleSKU,dataBase);
     singleWeight = getWeight(singleSKU,dataBase);
     dataTable[i] = {SKU:sku,FNSKU: FNSKU, shipped:shippedQTY,Item:item,QTY:totalUnitQTY,ID:id};
-    
-    
+    var sheetLine = [];
+ 
+
     if(costTable[Type] != null ){
       costTable[Type] = {singlePrice:singlePrice,singleWeight:singleWeight,typeTotalUnitQTY:costTable[Type].typeTotalUnitQTY+(shippedQTY * kitNum) };
     }else{
       costTable[Type] = {singlePrice:singlePrice,singleWeight:singleWeight,typeTotalUnitQTY: shippedQTY * kitNum};
     }
-    
-    $("#myTableBody").append('<tr><td>'
+    var color = " style='color:black'";
+    if(totalUnitQTY !=''){
+    	if (localInv - totalUnitQTY < 0){
+
+    		color = " style='color:red'";
+    	}else{
+
+    		color = " style='color:black'";
+    	}
+	}
+    $("#myTableBody").append('<tr'+color+'><td>'
       +sku+'</td><td>'
       +FNSKU+'</td><td>'
       +shippedQTY+'</td><td>'
@@ -118,15 +136,34 @@ function getInfo (){
       +totalUnitQTY+'</td><td>'
       +id+'</td><td>'
       +card+'</td><td>'
-      +reviewCard+'</td><td>'); 	
+      +reviewCard+'</td><td>'
+      +localInv+'</td></tr>'); 
 
+    sheetLine.push(sku);
+    sheetLine.push(FNSKU);
+    sheetLine.push(shippedQTY);
+    sheetLine.push(item);
+    sheetLine.push(totalUnitQTY);
+    sheetLine.push(id);
+    sheetLine.push(card);
+    sheetLine.push(reviewCard);
+    sheetLine.push(localInv);
+    sheetValueTable.push(sheetLine);
+
+ }else if(i == 8){
+  sheetValueTable.push(["Merchant SKU","FNSKU","Shipped","Item","QTY","ID", "Card", "Review","Inventory"]);
  }
 }
  console.log(dataTable);
  console.log(costTable);
+ sheetValueTable.push([""]);
+ sheetValueTable.push(["Cost Table"]);
+ sheetValueTable.push(["Type","Unit QTY" ,"Single Cost","Single Weight","Toal Cost", "Total Weight"]);
  var totalCost=0;
  var totalWeight=0;
  for (var x in costTable){
+ 	var costTableLine = [];
+
     $("#mycostTableBody").append('<tr><td>'
       +x+'</td><td>'
       +costTable[x].typeTotalUnitQTY+'</td><td>'
@@ -136,9 +173,21 @@ function getInfo (){
       +(costTable[x].typeTotalUnitQTY * costTable[x].singleWeight).toFixed(2)+'</td><td>');  
       totalCost += costTable[x].typeTotalUnitQTY * costTable[x].singlePrice;
       totalWeight += costTable[x].typeTotalUnitQTY * costTable[x].singleWeight;
+    costTableLine.push(x);
+    costTableLine.push(costTable[x].typeTotalUnitQTY);
+ 	costTableLine.push(costTable[x].singlePrice);
+ 	costTableLine.push(costTable[x].singleWeight);
+ 	costTableLine.push((costTable[x].typeTotalUnitQTY * costTable[x].singlePrice).toFixed(2));
+ 	costTableLine.push((costTable[x].typeTotalUnitQTY * costTable[x].singleWeight).toFixed(2));
+ 	sheetValueTable.push(costTableLine);
  }
  $("#total").append("Total Cost: " + totalCost.toFixed(2) + "  Total Weight: "+totalWeight.toFixed(2)); 
+ //sheetValueTable.push(["Total Cost: ",totalCost.toFixed(2),"  Total Weight: ",totalWeight.toFixed(2)]);
+
+
+ console.log("sheet Values table done " + sheetValueTable);
  };
+ 
  fr.readAsText(tsvFile);
 
 
@@ -154,6 +203,14 @@ function getID(item){
   //console.log("dataBase is [0] Key " + dataBase[item].ID);
   if(dataBase[item]!=null){
     return dataBase[item].ID;
+  }else{
+    return 'Not Found'; 
+  }
+
+}
+function getLocalInv(item){
+  if(dataBase[item]!=null){
+    return dataBase[item].LocalInventory;
   }else{
     return 'Not Found'; 
   }
@@ -189,10 +246,20 @@ function getWeight(item){
     return 'Not Found'; 
   }
 }
-
+ var CLIENT_ID;
+ var API_KEY;
 function handleClientLoad() {
+  
+    var config = firebase.database().ref("config");
+      config.once("value").then(function(snapshot) {
+      API_KEY = snapshot.val().GoogleAPIKey;
+      CLIENT_ID = snapshot.val().GoogleClientId;
       gapi.load('client:auth2', initClient);
+      
+    });
+      
 }
+
 function initClient() {
       
       // TODO: Authorize using one of the following scopes:
@@ -211,32 +278,41 @@ function initClient() {
         updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
       });
 }
-    function updateSignInStatus(isSignedIn) {
-      if (isSignedIn) {
-        makeApiCall();
+	var isloggedIn = false;
+function updateSignInStatus(isSignedIn) {
+      if (isSignedIn ) {
+      		getLocalInv();
+        	getLocalServerInv();
+        	
+        	document.getElementById("signin-button").style.display = "none";
+        	document.getElementById("fileInputDiv").style.visibility = "visible";
+      } else {
+      	console.log("logged out");
       }
     }
 
-    function handleSignInClick(event) {
+ function handleSignInClick(event) {
+    
       gapi.auth2.getAuthInstance().signIn();
-    }
 
-    function handleSignOutClick(event) {
+ }
+
+ function handleSignOutClick(event) {
       gapi.auth2.getAuthInstance().signOut();
-    }
+ }
 
-    function makeApiCall() {
+ function makeApiCall() {
       var spreadsheetBody = {
         // TODO: Add desired properties to the request body.
         properties:{
-          title:shipmentID + " Shipping Slip"
+          title:shipmentID,
         }
       };
 
       var request = gapi.client.sheets.spreadsheets.create({}, spreadsheetBody);
       request.then(function(response) {
         // TODO: Change code below to process the `response` object:
-        console.log(response.result.spreadsheetId);
+        console.log("created sheet ID " + response.result.spreadsheetId);
         var sheetID = response.result.spreadsheetId;
         appendValue(sheetID);
 
@@ -247,30 +323,76 @@ function initClient() {
    function appendValue(sheetID) {
       var params = {
         // The ID of the spreadsheet to update.
-        spreadsheetId: 'my-spreadsheet-id',  // TODO: Update placeholder value.
+        spreadsheetId: sheetID,  // TODO: Update placeholder value.
 
         // The A1 notation of a range to search for a logical table of data.
         // Values will be appended after the last row of the table.
         range: 'A:Z',  // TODO: Update placeholder value.
 
         // How the input data should be interpreted.
-        valueInputOption: 'USER_ENTERD',  // TODO: Update placeholder value.
+        valueInputOption: 'USER_ENTERED',  // TODO: Update placeholder value.
 
         // How the input data should be inserted.
         insertDataOption: 'OVERWRITE',  // TODO: Update placeholder value.
       };
-
+      console.log("table value is " + sheetValueTable);
       var valueRangeBody = {
         // TODO: Add desired properties to the request body.
         majorDimension: "ROWS",
-        values:speetValueTable
+        values:sheetValueTable
+
       };
 
       var request = gapi.client.sheets.spreadsheets.values.append(params, valueRangeBody);
       request.then(function(response) {
         // TODO: Change code below to process the `response` object:
         console.log(response.result);
+        document.getElementById("sendDataBtn").firstChild.data = "Succeed!";
+        document.getElementById("sheetLink").href = "https://docs.google.com/spreadsheets/d/"+response.result.spreadsheetId;
+     	$("#sheetLink").append( "https://docs.google.com/spreadsheets/d/"+response.result.spreadsheetId);
       }, function(reason) {
         console.error('error: ' + reason.result.error.message);
       });
+    }
+   var localInvTable = [];
+   function getLocalInv() {
+        gapi.client.sheets.spreadsheets.values.get({
+          spreadsheetId: '1Tz5Scf0dLG1XcozUghbCWfezSxxS7UVwdj5d3BaDYqs',
+          range: 'Master!D3:E',
+        }).then(function(response) {
+          var range = response.result;
+          if (range.values.length > 0) {
+            for (i = 0; i < range.values.length; i++) {
+              var row = range.values[i];
+              // Print columns A and E, which correspond to indices 0 and 4.
+              localInvTable[row[0]]=row[1];
+            }
+            console.log("localInvTable" + localInvTable["75TT13NU2R8-8G"]);
+          } else {
+            console.log("no data from PC 2018");
+          }
+        }, function(response) {
+          appendPre('Error: ' + response.result.error.message);
+        });
+    }
+    function getLocalServerInv() {
+        gapi.client.sheets.spreadsheets.values.get({
+          spreadsheetId: '1Qj-DbZnBZXYaRKFM7GwV2Ti4EzPDscPZB5IX6-xOqWY',
+          range: 'Master!D3:J',
+        }).then(function(response) {
+          var range = response.result;
+          if (range.values.length > 0) {
+            for (i = 0; i < range.values.length; i++) {
+              var row = range.values[i];
+             
+              // Print columns A and E, which correspond to indices 0 and 4.
+              localInvTable[row[0]]=row[6];
+            }
+            console.log("localSInvTable" + localInvTable["71TT16EUL2R8-8G"]);
+          } else {
+            console.log("no data from Server 2018");
+          }
+        }, function(response) {
+          appendPre('Error: ' + response.result.error.message);
+        });
     }
