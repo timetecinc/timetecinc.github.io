@@ -84,8 +84,15 @@ function getInfo (){
     if (singleSKU != nextSKU){
      // dataTable[i][3] = singleSKU;
      item = singleSKU;
-     id = getID(singleSKU);
-     localInv = localInvTable[singleSKU];
+     if(localInvTable[singleSKU]){
+     id = localInvTable[singleSKU].ID;
+     localInv = localInvTable[singleSKU].localInv;
+     }else{
+      id = "not Found";
+      localInv = 0;
+
+     }
+     
      totalUnitQTY = unitQTY;
      unitQTY = 0;
     }else{
@@ -358,14 +365,14 @@ function updateSignInStatus(isSignedIn) {
    function getLocalInv() {
         gapi.client.sheets.spreadsheets.values.get({
           spreadsheetId: '1Tz5Scf0dLG1XcozUghbCWfezSxxS7UVwdj5d3BaDYqs',
-          range: 'Master!D3:E',
+          range: 'Master!A3:E',
         }).then(function(response) {
           var range = response.result;
           if (range.values.length > 0) {
             for (i = 0; i < range.values.length; i++) {
               var row = range.values[i];
               // Print columns A and E, which correspond to indices 0 and 4.
-              localInvTable[row[0]]=row[1];
+              localInvTable[row[3]]={ID:row[0], localInv:row[4]};
             }
             console.log("localInvTable" + localInvTable["75TT13NU2R8-8G"]);
           } else {
@@ -378,7 +385,7 @@ function updateSignInStatus(isSignedIn) {
     function getLocalServerInv() {
         gapi.client.sheets.spreadsheets.values.get({
           spreadsheetId: '1Qj-DbZnBZXYaRKFM7GwV2Ti4EzPDscPZB5IX6-xOqWY',
-          range: 'Master!D3:J',
+          range: 'Master!A3:J',
         }).then(function(response) {
           var range = response.result;
           if (range.values.length > 0) {
@@ -386,7 +393,7 @@ function updateSignInStatus(isSignedIn) {
               var row = range.values[i];
              
               // Print columns A and E, which correspond to indices 0 and 4.
-              localInvTable[row[0]]=row[6];
+              localInvTable[row[3]]={ID:row[0], localInv:row[9]};
             }
             console.log("localSInvTable" + localInvTable["71TT16EUL2R8-8G"]);
           } else {
