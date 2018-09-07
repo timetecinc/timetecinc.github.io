@@ -1,6 +1,6 @@
 var shipmentID;
 var sheetValueTable=[];
-
+var totalSKU;
 function getInfo (){
  $( "#myTableBody" ).empty();
  $( "#mycostTableBody" ).empty();
@@ -9,7 +9,8 @@ function getInfo (){
  document.getElementById("mainTable").style.visibility = "visible";
  document.getElementById("costTable").style.visibility = "visible";
  document.getElementById("costTableTitle").style.visibility = "visible";
- document.getElementById("sendDataBtn").style.visibility = "visible";
+ document.getElementById("sendDataDiv").style.visibility = "visible";
+ 
   var fileInput = document.getElementById('tsv');
  
   var tsvFile = fileInput.files[0];
@@ -44,7 +45,9 @@ function getInfo (){
   var costTable = []; 
   var localInv = 0;
   sheetValueTable=[];
-  shipmentID = lines[0].split('\t')[1] + " Shipping Slip";
+  shipmentID = lines[0].split('\t')[1];
+  totalSKU = lines[4].split('\t')[1];
+
   console.log("shipmentID " + shipmentID);
   //=========Star decode file===========================================================
   for (var i = 0; i<lines.length -1; i++){
@@ -92,7 +95,7 @@ function getInfo (){
       localInv = 0;
 
      }
-     
+
      totalUnitQTY = unitQTY;
      unitQTY = 0;
     }else{
@@ -308,6 +311,7 @@ function updateSignInStatus(isSignedIn) {
       gapi.auth2.getAuthInstance().signOut();
  }
 
+/* Create new spreadsheet
  function makeApiCall() {
       var spreadsheetBody = {
         // TODO: Add desired properties to the request body.
@@ -327,14 +331,27 @@ function updateSignInStatus(isSignedIn) {
         console.error('error: ' + reason.result.error.message);
       });
     }
-   function appendValue(sheetID) {
+*/
+   function sendUSData(){
+      creatNewSheet("1JjT-wuNCOqGaKrIloRG5rsGJ1gZb2ocGnL4wL35A6Lg");
+
+   }
+   function sendCAData(){
+      creatNewSheet("1aykSbZqkLHHlTxL-7s1IU-k3qmAFx2pQQ-m-5TNDwlA");
+
+   }
+   function sendMXData(){
+      creatNewSheet("1UHgoBA6NG086CUbQgkMvY4SLroDU_wTXP3QqNqoGK7M");
+
+   }
+   function appendValue(spreadSheetID) {
       var params = {
         // The ID of the spreadsheet to update.
-        spreadsheetId: sheetID,  // TODO: Update placeholder value.
+        spreadsheetId: spreadSheetID,  // TODO: Update placeholder value.
 
         // The A1 notation of a range to search for a logical table of data.
         // Values will be appended after the last row of the table.
-        range: 'A:Z',  // TODO: Update placeholder value.
+        range: (shipmentID+'!A:Z'),  // TODO: Update placeholder value.
 
         // How the input data should be interpreted.
         valueInputOption: 'USER_ENTERED',  // TODO: Update placeholder value.
@@ -354,7 +371,8 @@ function updateSignInStatus(isSignedIn) {
       request.then(function(response) {
         // TODO: Change code below to process the `response` object:
         console.log(response.result);
-        document.getElementById("sendDataBtn").firstChild.data = "Succeed!";
+        sendFormat(spreadSheetID);
+        $("#sheetLink").empty();
         document.getElementById("sheetLink").href = "https://docs.google.com/spreadsheets/d/"+response.result.spreadsheetId;
      	$("#sheetLink").append( "https://docs.google.com/spreadsheets/d/"+response.result.spreadsheetId);
       }, function(reason) {
@@ -362,6 +380,8 @@ function updateSignInStatus(isSignedIn) {
       });
     }
    var localInvTable = [];
+
+
    function getLocalInv() {
         gapi.client.sheets.spreadsheets.values.get({
           spreadsheetId: '1Tz5Scf0dLG1XcozUghbCWfezSxxS7UVwdj5d3BaDYqs',
@@ -382,6 +402,8 @@ function updateSignInStatus(isSignedIn) {
           appendPre('Error: ' + response.result.error.message);
         });
     }
+
+
     function getLocalServerInv() {
         gapi.client.sheets.spreadsheets.values.get({
           spreadsheetId: '1Qj-DbZnBZXYaRKFM7GwV2Ti4EzPDscPZB5IX6-xOqWY',
@@ -402,4 +424,160 @@ function updateSignInStatus(isSignedIn) {
         }, function(response) {
           appendPre('Error: ' + response.result.error.message);
         });
+    }
+     var newSheetID;
+
+
+     function creatNewSheet(spreadSheetID) {
+      var params = {
+        // The spreadsheet to apply the updates to.
+        spreadsheetId: spreadSheetID,  // TODO: Update placeholder value.
+      };
+
+      var batchUpdateSpreadsheetRequestBody = {
+        // A list of updates to apply to the spreadsheet.
+        // Requests will be applied in the order they are specified.
+        // If any request is not valid, no requests will be applied.
+        requests: [
+              {
+                  "addSheet": {
+                    "properties": {
+                      "title": shipmentID,
+                      "gridProperties": {
+                        "rowCount": 100,
+                        "columnCount": 50,
+                        "frozenRowCount": 8
+                      },
+                      "index": 0
+                    }
+                  }
+                }
+                ],  // TODO: Update placeholder value.
+
+        // TODO: Add desired properties to the request body.
+      };
+
+      var request = gapi.client.sheets.spreadsheets.batchUpdate(params, batchUpdateSpreadsheetRequestBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+        newSheetID = response.result.replies[0].addSheet.properties.sheetId;
+        appendValue(spreadSheetID);
+        console.log("response.result sheetID" + newSheetID);
+      }, function(reason) {
+        console.error('error: ' + reason.result.error.message);
+      });
+    }
+
+    function sendFormat(spreadSheetID) {
+      var params = {
+        // The spreadsheet to apply the updates to.
+        spreadsheetId: spreadSheetID,  // TODO: Update placeholder value.
+      };
+      console.log("totalSKU " + (totalSKU+8));
+      var batchUpdateSpreadsheetRequestBody = {
+        // A list of updates to apply to the spreadsheet.
+        // Requests will be applied in the order they are specified.
+        // If any request is not valid, no requests will be applied.
+        requests: [
+          {
+             "updateBorders": {
+              "range": {
+                "sheetId": newSheetID,
+                "startRowIndex": 8,
+                "endRowIndex": 9+parseInt(totalSKU, 10),
+                "startColumnIndex": 0,
+                "endColumnIndex": 9
+              },
+              "bottom": {
+                "color": {
+                  "blue": 0,
+                  "green": 0,
+                  "red": 0
+                },
+                "style": "SOLID",
+                "width": 1
+              }, 
+              "top": {
+                 "color": {
+                  "blue": 0,
+                  "green": 0,
+                  "red": 0
+                },
+                "style": "SOLID",
+                "width": 1
+              },
+              "left": {
+                 "color": {
+                  "blue": 0,
+                  "green": 0,
+                  "red": 0
+                },
+                "style": "SOLID",
+                "width": 1
+              },
+              "right": {
+                 "color": {
+                  "blue": 0,
+                  "green": 0,
+                  "red": 0
+                },
+                "style": "SOLID",
+                "width": 1
+              },
+              "innerHorizontal": {
+                 "color": {
+                  "blue": 0,
+                  "green": 0,
+                  "red": 0
+                },
+                "style": "SOLID",
+                "width": 1
+              },
+              "innerVertical": {
+                 "color": {
+                  "blue": 0,
+                  "green": 0,
+                  "red": 0
+                },
+                "style": "SOLID",
+                "width": 1
+              }
+
+            }
+          },
+          {
+            "autoResizeDimensions": {
+              "dimensions": {
+                "sheetId": newSheetID,
+                "dimension": "COLUMNS",
+                "startIndex": 0,
+                "endIndex": 1
+              }
+            }
+          },
+          {
+            "autoResizeDimensions": {
+              "dimensions": {
+                "sheetId": newSheetID,
+                "dimension": "COLUMNS",
+                "startIndex": 2,
+                "endIndex": 30
+              }
+            }
+          }
+
+
+        ],  // TODO: Update placeholder value.
+
+        // TODO: Add desired properties to the request body.
+      };
+
+      var request = gapi.client.sheets.spreadsheets.batchUpdate(params, batchUpdateSpreadsheetRequestBody);
+      request.then(function(response) {
+        // TODO: Change code below to process the `response` object:
+        console.log(response.result);
+      }, function(reason) {
+        console.error('error: ' + reason.result.error.message);
+      });
     }

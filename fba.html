@@ -66,10 +66,15 @@
         </form>
 
         <br>
-        <div>
-          <button id="sendDataBtn" class="btn btn-primary" style="visibility: hidden" onclick="makeApiCall()">Send to SpreadSheet</button>
+        <div id="sendDataDiv" style="visibility: hidden">
+
+          <button id="sendUSDataBtn" class="btn btn-primary"  onclick="sendUSData()">Send to US Sheet</button>
+          <button id="sendCADataBtn" class="btn btn-primary"  onclick="sendCAData()">Send to CA Sheet</button> 
+          <button id="sendCADataBtn" class="btn btn-primary"  onclick="sendMXData()">Send to MX Sheet</button>          
         </div>
         <a id="sheetLink"></a>
+        <br>
+        <pre id="content"></pre>
         <div>
          
         <div class="error"></div>
