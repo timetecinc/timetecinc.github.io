@@ -377,6 +377,7 @@ function updateSignInStatus(isSignedIn) {
      	$("#sheetLink").append( "https://docs.google.com/spreadsheets/d/"+response.result.spreadsheetId);
       }, function(reason) {
         console.error('error: ' + reason.result.error.message);
+        appendPre('Error: ' + reason.result.error.message);
       });
     }
    var localInvTable = [];
@@ -466,6 +467,7 @@ function updateSignInStatus(isSignedIn) {
         console.log("response.result sheetID" + newSheetID);
       }, function(reason) {
         console.error('error: ' + reason.result.error.message);
+        appendPre('Error: ' + reason.result.error.message);
       });
     }
 
@@ -579,5 +581,6 @@ function updateSignInStatus(isSignedIn) {
         console.log(response.result);
       }, function(reason) {
         console.error('error: ' + reason.result.error.message);
+        appendPre('Error: ' + reason.result.error.message);
       });
     }
