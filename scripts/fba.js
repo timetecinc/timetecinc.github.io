@@ -1,6 +1,7 @@
 var shipmentID;
 var sheetValueTable=[];
 var totalSKU;
+var productStartLine;
 function getInfo (){
  $( "#myTableBody" ).empty();
  $( "#mycostTableBody" ).empty();
@@ -47,12 +48,19 @@ function getInfo (){
   sheetValueTable=[];
   shipmentID = lines[0].split('\t')[1];
   totalSKU = lines[4].split('\t')[1];
+ 
 
   console.log("shipmentID " + shipmentID);
   //=========Star decode file===========================================================
   for (var i = 0; i<lines.length -1; i++){
+  	if (lines[i].split('\t')[0] == "Merchant SKU"){
+  		productStartLine = i;
+  	}
+
+  }
+  for (var i = 0; i<lines.length -1; i++){
     //get baic info
-    if(i<=7){
+    if(i<productStartLine){
 
       $("#info").append(lines[i]+"<br>");
       var temp = [];
@@ -61,7 +69,7 @@ function getInfo (){
       }
       //console.log("table pushed " + lines[i]);
       sheetValueTable.push(temp);
-    }else if (i>=9){
+    }else if (i> productStartLine){
     // deal with sorting
     var line = lines[i].split('\t');//split tab
     //get sku
@@ -160,7 +168,7 @@ function getInfo (){
     sheetLine.push(localInv);
     sheetValueTable.push(sheetLine);
 
- }else if(i == 8){
+ }else if(i == productStartLine){
   sheetValueTable.push(["Merchant SKU","FNSKU","Shipped","Item","QTY","ID", "Card", "Review","Inventory"]);
  }
 }
@@ -447,7 +455,7 @@ function updateSignInStatus(isSignedIn) {
                       "gridProperties": {
                         "rowCount": 100,
                         "columnCount": 50,
-                        "frozenRowCount": 8
+                        "frozenRowCount": productStartLine
                       },
                       "index": 0
                     }
@@ -486,8 +494,8 @@ function updateSignInStatus(isSignedIn) {
              "updateBorders": {
               "range": {
                 "sheetId": newSheetID,
-                "startRowIndex": 8,
-                "endRowIndex": 9+parseInt(totalSKU, 10),
+                "startRowIndex": productStartLine,
+                "endRowIndex": productStartLine+parseInt(totalSKU, 10)+1,
                 "startColumnIndex": 0,
                 "endColumnIndex": 9
               },
