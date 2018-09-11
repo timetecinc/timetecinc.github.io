@@ -197,6 +197,7 @@ function updateSignInStatus(isSignedIn) {
         }
       }, function(reason) {
         console.error('error: ' + reason.result.error.message);
+        appendPre('Error: ' + reason.result.error.message);
       });
 }
  function getLineNumber(sheetID, ID, FBAColNum, customerCol, orderCol) {
@@ -300,6 +301,7 @@ function updateSignInStatus(isSignedIn) {
         
       }, function(reason) {
         console.error('error: ' + reason.result.error.message);
+        appendPre('Error: ' + reason.result.error.message);
       });
 }
 
@@ -323,7 +325,15 @@ function sendToSheet(sheetID, data) {
       request.then(function(response) {
         // TODO: Change code below to process the `response` object:
         console.log(response.result);
+        appendPre("Data sent");
       }, function(reason) {
         console.error('error: ' + reason.result.error.message);
+        appendPre('Error: ' + reason.result.error.message);
       });
+    }
+
+    function appendPre(message) {
+        var pre = document.getElementById('content');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
     }
