@@ -26,9 +26,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
       
-
     <script src="scripts/nav.js"></script>
-    <script src="scripts/plan.js"></script>
+    <script src="scripts/inventoryIO.js"></script>
     <body>
        <div id="navBar"></div>
         <div class="container">
@@ -36,49 +35,44 @@
 
           <div class="col-md-12">
           <div class="jumbotron">
-            <h1 class="display-4">FBA Shipment Planer</h1>
-            <p class="lead">This planer gets "Restock Inventory" report from Amazon and suggest shipment QTY for next 30 days</p>
-            <p>Suggest Shipment QTY = (Sales - FBA inventory) * 1.2</p>
+            <h1 class="display-4">Inventory Recording System</h1>
+            <p class="lead">This system collects Item SKU, ID and QTY them send the information to the correct sheets</p>
+            
             <hr class="my-4" >
-            <div class="form-check" style="display:none">
-              <div class="form-check form-check-inline" >
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="US" checked>
-                <label class="form-check-label" for="inlineRadio1">US</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="CA">
-                <label class="form-check-label" for="inlineRadio2">CA</label>
-              </div>
-            </div>
             <br>
             <br>
-            <a class="btn btn-primary btn-lg" id="getButton" href="#" role="button" onclick="getReadyReportRequestList()">Log in Google Account</a>
+            <a class="btn btn-primary btn-lg" id="signinButton" href="#" role="button" onclick="handleSignInClick()">Log in Google Account</a>
 
-            <a class="btn btn-success btn-lg" id="sendButton" style="visibility: hidden" href="#" role="button" onclick="handleSignInClick()">Send to Shipment Request Sheet</a>
+            <a class="btn btn-primary btn-lg" id="sendButton" style="visibility: hidden" href="#" role="button" onclick="getInformation()">Process Info</a>
+            
+            <a class="btn btn-success btn-lg" id="sendButton2" style="visibility: hidden" href="#" role="button" onclick="sendToSheet()">Send to Inventory Sheet</a>
             <br>
             <a id="txtHint"></a>
           </div>
+          <!-- --------------------           body     --------------------------        -->
           <form>
-          <div class="table-responsive">
-            <table id="myTable" class="table table-bordred table-hover">
-             <thead>                 
-               
-               <th>SKU</th>
-               <th>ASIN</th>
-               <th>FBA Inventory</th>
-               <th>Sales in 30 Days</th>
-               <th>local Invenotry</th>
-               <th>Suggest Shipment QTY</th>
-               <th>Plan</th>          
-               
-             </thead>
-                <tbody id = "myTableBody">
-   
-                </tbody>
-          
-              </table>
+            <div class="form-group">
+              <div class="row">
+
+              <div class="col-sm">
+                 <label style="font-weight:bold" for="IDTextArea">ID</label>
+                 <textarea class="form-control" id="IDTextArea" rows="20"></textarea>
+              </div>
+              <div class="col-sm">
+                 <label style="font-weight:bold" for="QTYTextArea">QTY (No need to times Kit)</label>
+                 <textarea class="form-control" id="QTYTextArea" rows="20"></textarea>
+              </div>
+              <div class="col-sm">
+                 <label style="font-weight:bold" for="CustomerTextArea">Customer Name</label>
+                 <textarea class="form-control" id="CustomerTextArea" rows="20"></textarea>
+              </div>
+              <div class="col-sm">
+                 <label style="font-weight:bold" for="OrderIDTextArea">Order ID.</label>
+                 <textarea class="form-control" id="OrderIDTextArea" rows="20"></textarea>
+              </div>
             </div>
-            </form>
+            </div>
+          </form>
           </div>
           <br><br>
         </div>

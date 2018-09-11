@@ -146,9 +146,7 @@ function pushToTable(planTable){
       +planTable[x].SalesUnits+'</td><td>'
       +localInvTable[temp]+'</td><td>'
       +planTable[x].suggestUnits+'</td><td>'
-      +"<input type='text' id='"+x+"' size='4'>"+"</td><td>"
-      +"<p data-placement='top' data-toggle='tooltip' title='Delete'><button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button></p>"
-      +"</td></tr>"); 
+      +"<input type='text' id='"+x+"' size='4'>"+"</td></tr>"); 
 
 	}
 	readyToSend = true;
@@ -272,15 +270,17 @@ function appendValue(sheetID) {
       request.then(function(response) {
         // TODO: Change code below to process the `response` object:
         console.log(response.result);
+        document.getElementById("txtHint").innerHTML = "Request Sent. See it in the spreadsheet";
+      	document.getElementById("txtHint").href = "https://docs.google.com/spreadsheets/d/1FlVjDCLZd9zzQ457WshMDTtzz_iMt-aEV0T9DGH-phY";
       }, function(reason) {
         console.error('error: ' + reason.result.error.message);
       });
     }
    var localInvTable = [];
-   function getLocalInv() {
-        gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId: '1Tz5Scf0dLG1XcozUghbCWfezSxxS7UVwdj5d3BaDYqs',
-          range: 'Master!D3:E',
+function getLocalInv() {
+     gapi.client.sheets.spreadsheets.values.get({
+     spreadsheetId: '1Tz5Scf0dLG1XcozUghbCWfezSxxS7UVwdj5d3BaDYqs',
+     range: 'Master!D3:E',
         }).then(function(response) {
           var range = response.result;
           if (range.values.length > 0) {
@@ -295,4 +295,4 @@ function appendValue(sheetID) {
         }, function(response) {
           appendPre('Error: ' + response.result.error.message);
         });
-      }
+   }

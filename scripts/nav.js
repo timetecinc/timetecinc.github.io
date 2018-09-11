@@ -3,7 +3,8 @@
  var dataPageSelec = "nav-item";
  var listingPageSelec = "nav-item";
  var fbaPageSelec = "nav-item";
-var name, email, photoUrl, uid;
+ var invIOPageSelec = "nav-item";
+ var name, email, photoUrl, uid;
 
 
 
@@ -29,7 +30,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   } else {
     // No user is signed in.
     console.log("not logged in inNav");
-    //window.location = 'index.html';
+    window.location = 'index.html';
   }
 });
 
@@ -46,6 +47,8 @@ firebase.auth().onAuthStateChanged(function(user) {
    else if(current_page == 'fba.html' || current_page == 'FBAPlan.html' ){
        fbaPageSelec = "nav-item active";
    }else if(current_page == 'myProfile.html'){
+       $(".navbar #myProfile").addClass('active');
+   }else if(current_page == 'inventoryIO.html'){
        $(".navbar #myProfile").addClass('active');
    }
 initialNavBar();
@@ -67,6 +70,9 @@ document.getElementById("navBar").innerHTML =
     +"</li>"
     +"<li id='listingPage'class='"+listingPageSelec+"'>"
      + "<a class='nav-link' href='listing.html'>Listing</a>"
+    +"</li>"
+    +"<li id='listingPage'class='"+invIOPageSelec+"'>"
+     + "<a class='nav-link' href='inventoryIO.html'>Inventory</a>"
     +"</li>"
    +" <li class='nav-item dropdown'>"
      +"<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'  >FBA</a>"
