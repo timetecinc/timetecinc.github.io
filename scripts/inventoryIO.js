@@ -5,8 +5,8 @@ var totalNPNumer = 0;
 var totalSVNumber = 0;
 var processedNP = 0;
 var processedSV = 0;
-var pcSheetID = "1blLw8Pn8sUJ11SU5TqCc3CbN2vfL9M6gnyoBZNL8HZ4";
-var svSheetID = "1EzN0MSYph7sJRk4jAZn_RgperOgOVAoWBkvWGfgIPKg";
+var pcSheetID = "1Tz5Scf0dLG1XcozUghbCWfezSxxS7UVwdj5d3BaDYqs";
+var svSheetID = "1Qj-DbZnBZXYaRKFM7GwV2Ti4EzPDscPZB5IX6-xOqWY";
 var aphabetArray = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T"];
 function getInformation(){
 	totalNPNumer = 0;
