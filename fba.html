@@ -75,7 +75,8 @@
 
           <button id="sendUSDataBtn" class="btn btn-primary"  onclick="sendUSData()">Send to US Sheet</button>
           <button id="sendCADataBtn" class="btn btn-primary"  onclick="sendCAData()">Send to CA Sheet</button> 
-          <button id="sendCADataBtn" class="btn btn-primary"  onclick="sendMXData()">Send to MX Sheet</button>          
+          <button id="sendCADataBtn" class="btn btn-primary"  onclick="sendMXData()">Send to MX Sheet</button> 
+          <button class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target=".bd-example-modal-md">Setting</button>         
         </div>
         <a id="sheetLink"></a>
         <br>
@@ -85,7 +86,43 @@
         <div class="error"></div>
       </div>
       </div>
+    
     </div>
+    <!--small window-->
+      <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="sheetIDModal">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Update Sheet ID</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form onsubmit="return uploadIDData()">
+          <div class="modal-body">
+            
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">US Sheet ID:</label>
+                <input type="text" class="form-control" id="usSheetIDInput">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">CA Sheet ID:</label>
+                <input type="text" class="form-control" id="caSheetIDInput">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">MX Sheet ID:</label>
+                <input type="text" class="form-control" id="mxSheetIDInput">
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" >Submit</button>
+          </div>
+        
+        </form>
+      </div>
+    </div>
+  </div>
     <!--///////////////////////////////////////Result/////////////////////////////////////////////////////////-->
     
       <div class="table-responsive">

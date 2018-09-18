@@ -2,6 +2,23 @@ var shipmentID;
 var sheetValueTable=[];
 var totalSKU;
 var productStartLine;
+var USFBASheetID;
+var CAFBASheetID;
+var MXFBASheetID;
+
+$( document ).ready(function() {
+
+      var config = firebase.database().ref("config");
+      config.once("value").then(function(snapshot) {
+        USFBASheetID = snapshot.val().USFBASheetID;
+        CAFBASheetID = snapshot.val().CAFBASheetID;
+        MXFBASheetID = snapshot.val().MXFBASheetID;
+        document.getElementById("usSheetIDInput").value = snapshot.val().USFBASheetID;
+        document.getElementById("caSheetIDInput").value = snapshot.val().CAFBASheetID;
+        document.getElementById("mxSheetIDInput").value = snapshot.val().MXFBASheetID;           
+      
+    });
+});
 function getInfo (){
  $( "#myTableBody" ).empty();
  $( "#mycostTableBody" ).empty();
@@ -268,6 +285,36 @@ function getWeight(item){
     return 'Not Found'; 
   }
 }
+function uploadIDData(){
+  var usID = document.getElementById("usSheetIDInput").value;
+  var caID = document.getElementById("caSheetIDInput").value;
+  var mxID = document.getElementById("mxSheetIDInput").value;
+  console.log("us id" + usID);
+  console.log("ca id" + caID);
+  console.log("mx id" + mxID);
+  if(usID){
+    USFBASheetID = usID;
+    firebase.database().ref('config').update({
+      USFBASheetID: usID
+    });
+  }
+  if(caID){
+    CAFBASheetID = caID;
+
+    firebase.database().ref('config').update({
+      CAFBASheetID: caID
+    });
+  }
+  if(mxID){
+
+    MXFBASheetID = mxID;
+    firebase.database().ref('config').update({
+      MXFBASheetID: mxID
+    });
+  }
+  $('#sheetIDModal').modal('hide');
+  return false;
+}
  var CLIENT_ID;
  var API_KEY;
 function handleClientLoad() {
@@ -345,15 +392,15 @@ function updateSignInStatus(isSignedIn) {
     }
 */
    function sendUSData(){
-      creatNewSheet("1JjT-wuNCOqGaKrIloRG5rsGJ1gZb2ocGnL4wL35A6Lg");
+      creatNewSheet(USFBASheetID);
 
    }
    function sendCAData(){
-      creatNewSheet("1aykSbZqkLHHlTxL-7s1IU-k3qmAFx2pQQ-m-5TNDwlA");
+      creatNewSheet(CAFBASheetID);
 
    }
    function sendMXData(){
-      creatNewSheet("1UHgoBA6NG086CUbQgkMvY4SLroDU_wTXP3QqNqoGK7M");
+      creatNewSheet(MXFBASheetID);
 
    }
    function appendValue(spreadSheetID) {
