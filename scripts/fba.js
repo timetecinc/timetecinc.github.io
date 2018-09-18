@@ -167,7 +167,7 @@ function getInfo (){
     sheetLine.push(card);
     sheetLine.push(reviewCard);
     sheetLine.push(localInv);
-    if(localInv-totalUnit < 0){
+    if(localInv-totalUnitQTY < 0){
       sheetLine.push("Not Enough Inventory");
     }
     sheetValueTable.push(sheetLine);
