@@ -3,8 +3,7 @@
  var dataPageSelec = "nav-item";
  var listingPageSelec = "nav-item";
  var fbaPageSelec = "nav-item";
- var invIOPageSelec = "nav-item";
- var name, email, photoUrl, uid;
+var name, email, photoUrl, uid;
 
 
 
@@ -30,7 +29,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   } else {
     // No user is signed in.
     console.log("not logged in inNav");
-    window.location = 'index.html';
+    //window.location = 'index.html';
   }
 });
 
@@ -48,15 +47,13 @@ firebase.auth().onAuthStateChanged(function(user) {
        fbaPageSelec = "nav-item active";
    }else if(current_page == 'myProfile.html'){
        $(".navbar #myProfile").addClass('active');
-   }else if(current_page == 'inventoryIO.html'){
-       $(".navbar #myProfile").addClass('active');
    }
 initialNavBar();
 })
 
 function initialNavBar(){
 document.getElementById("navBar").innerHTML =
-"<nav class='navbar navbar-expand-lg navbar-light bg-light flex-md-nowrap p-0 shadow'>"
+"<nav class='navbar navbar-expand-lg navbar-light bg-light'>"
  +"<a class='navbar-brand' href='data.html'>"
    +" <img src='image/ICON.png' width='30' height='30' class='d-inline-block align-top' alt=''>"
    + " Timetec Inc</a>"
@@ -65,17 +62,11 @@ document.getElementById("navBar").innerHTML =
    +"</button>"
    +" <div class='collapse navbar-collapse' id='navbarNavDropdown'>"
  +"<ul class='navbar-nav mr-auto'>"
-   +"<li id='listingPage'class='"+invIOPageSelec+"'>"
-    + "<a class='nav-link' href='dashboard.html'>Dashboard</a>"
-    +"</li>"
    + "<li id='dataPage' class='"+dataPageSelec+"'>"
      +"<a class='nav-link' href='data.html'>Memory Data</a>"
     +"</li>"
     +"<li id='listingPage'class='"+listingPageSelec+"'>"
      + "<a class='nav-link' href='listing.html'>Listing</a>"
-    +"</li>"
-    +"<li id='listingPage'class='"+invIOPageSelec+"'>"
-     + "<a class='nav-link' href='inventoryIO.html'>Inventory</a>"
     +"</li>"
    +" <li class='nav-item dropdown'>"
      +"<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'  >FBA</a>"

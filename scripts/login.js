@@ -50,7 +50,7 @@
   console.log("email: " + email);
   console.log(photoUrl);
   console.log(uid);
-  window.location = 'data.html';
+  window.location = 'dashboard.html';
 
   } else {
 
