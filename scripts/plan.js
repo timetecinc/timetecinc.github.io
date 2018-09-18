@@ -14,7 +14,11 @@ function requestAReport(callback) {
                 callback();
             }
         };
-        xmlhttp.open("GET", "MarketplaceWebService/Samples/RequestReport1.php", true);
+        if(document.getElementById('USRadio').checked){
+          xmlhttp.open("GET", "MarketplaceWebService/Samples/RequestReportUS.php", true);
+        }else{
+          xmlhttp.open("GET", "MarketplaceWebService/Samples/RequestReportCA.php", true);
+        }
         xmlhttp.send();
         
     
@@ -112,7 +116,7 @@ function getUsefulData(result){
     var plan = [];
     for(var i=0; i< lines.length; i++){
         line = lines[i].split("\t");
-        if(line[1].includes("CA")){
+        
             sku = line[1];
             asin = line[2];
             salesUnits = line[7];
@@ -126,7 +130,7 @@ function getUsefulData(result){
         //console.log("plabTable" + plan[sku].ASIN);
         //pushToTable(sku,plan[sku]);
         
-        }
+        
     }
    plan.sort(function(a,b){return(b.suggestUnits-a.suggestUnits)});
    document.getElementById("sendButton").style.visibility = "visible";
@@ -225,6 +229,8 @@ function updateSignInStatus(isSignedIn) {
       	isloggedIn = true;
       	console.log("isSignedIn and table is empty");
         document.getElementById('getButton').firstChild.data = "Get Plan";
+        
+        document.getElementById('radioDiv').style.visibility = "visible";
       }
     }
 

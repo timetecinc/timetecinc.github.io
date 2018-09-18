@@ -40,13 +40,13 @@
             <p class="lead">This planer gets "Restock Inventory" report from Amazon and suggest shipment QTY for next 30 days</p>
             <p>Suggest Shipment QTY = (Sales - FBA inventory) * 1.2</p>
             <hr class="my-4" >
-            <div class="form-check" style="display:none">
+            <div class="form-check" id= "radioDiv" style="visibility: hidden">
               <div class="form-check form-check-inline" >
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="US" checked>
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="USRadio" value="US" checked>
                 <label class="form-check-label" for="inlineRadio1">US</label>
               </div>
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="CA">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="CARadio" value="CA">
                 <label class="form-check-label" for="inlineRadio2">CA</label>
               </div>
             </div>

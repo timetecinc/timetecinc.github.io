@@ -60,6 +60,7 @@ function getInfo (){
   }
   for (var i = 0; i<lines.length -1; i++){
     //get baic info
+    localInv = "";
     if(i<productStartLine){
 
       $("#info").append(lines[i]+"<br>");
@@ -166,6 +167,9 @@ function getInfo (){
     sheetLine.push(card);
     sheetLine.push(reviewCard);
     sheetLine.push(localInv);
+    if(localInv-totalUnit < 0){
+      sheetLine.push("Not Enough Inventory");
+    }
     sheetValueTable.push(sheetLine);
 
  }else if(i == productStartLine){
