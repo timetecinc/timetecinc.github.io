@@ -190,7 +190,7 @@ function getInfo (){
     sheetValueTable.push(sheetLine);
 
  }else if(i == productStartLine){
-  sheetValueTable.push(["Merchant SKU","FNSKU","Shipped","Item","QTY","ID", "Card", "Review","Inventory"]);
+  sheetValueTable.push(["Merchant SKU","FNSKU","Shipped","Item","QTY","ID", "Label", "Card","Inventory"]);
  }
 }
  console.log(dataTable);

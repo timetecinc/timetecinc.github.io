@@ -12,6 +12,10 @@ window.onload = function() {
     var allData = snapshot.val();
    
     var dates = Object.keys(snapshot.val());
+    var index = dates.indexOf("0");
+    if(index > -1){
+      dates.splice(index,1);
+    }
     var salesQTY = [];
     var typeSaleTable = [];
      typeItemsTable = [];
@@ -19,47 +23,48 @@ window.onload = function() {
     var lastUpdateDate = dates[dates.length-1].substring(0,2)+"/"+dates[dates.length-1].substring(2,4)+"/"+dates[dates.length-1].substring(4,8);
     document.getElementById("Top").innerHTML="Last Update: " + lastUpdateDate;
     for (var child in allData){
-      //console.log(child);
-      //console.log(allData[child]);
-
-      var sum = 0;
-      for (var child2 in allData[child]){
-        // get sales qty data
-        sum +=allData[child][child2].QTY;
-        // get item type data
-        var type = getItemType(child2);
-        if(typeSaleTable[type]){
-          typeSaleTable[type] += allData[child][child2].QTY;
-          if(typeItemsTable[type].includes(child2) == false){
-            typeItemsTable[type].push(child2);
-             //console.log("typeItemsTable pushed " + type+ " " +child2 );
-          }
-         
-        }else{
-          typeSaleTable[type] = 0;
-          typeSaleTable[type] += allData[child][child2].QTY;
-          typeItemsTable[type] = [];          
-          typeItemsTable[type].push(child2);
-         //console.log("typeItemsTable pushed first Time " + type+ " " +child2 );
-        }
-        // get price and sales data
-        //console.log("sku: " + child2);
-        //console.log("sku - price  " + allData[child][child2].Price + " qty " +allData[child][child2].QTY);
-
-        if(PnSDataTable[child2]){
-          if(PnSDataTable[child2][allData[child][child2].Price]){
-            PnSDataTable[child2][allData[child][child2].Price].push(allData[child][child2].QTY);
+        console.log("Child" + child);
+        //console.log(allData[child]);
+      if(child != "0"){
+        var sum = 0;
+        for (var child2 in allData[child]){
+          // get sales qty data
+          sum +=allData[child][child2].QTY;
+          // get item type data
+          var type = getItemType(child2);
+          if(typeSaleTable[type]){
+            typeSaleTable[type] += allData[child][child2].QTY;
+            if(typeItemsTable[type].includes(child2) == false){
+              typeItemsTable[type].push(child2);
+               //console.log("typeItemsTable pushed " + type+ " " +child2 );
+            }
+           
           }else{
-            PnSDataTable[child2][allData[child][child2].Price] = [];
-            PnSDataTable[child2][allData[child][child2].Price].push(allData[child][child2].QTY);
+            typeSaleTable[type] = 0;
+            typeSaleTable[type] += allData[child][child2].QTY;
+            typeItemsTable[type] = [];          
+            typeItemsTable[type].push(child2);
+           //console.log("typeItemsTable pushed first Time " + type+ " " +child2 );
           }
-          
-        }else{
-          PnSDataTable[child2] = [];
-          PnSDataTable[child2][allData[child][child2].Price]=[allData[child][child2].QTY];
+          // get price and sales data
+          //console.log("sku: " + child2);
+          //console.log("sku - price  " + allData[child][child2].Price + " qty " +allData[child][child2].QTY);
+
+          if(PnSDataTable[child2]){
+            if(PnSDataTable[child2][allData[child][child2].Price]){
+              PnSDataTable[child2][allData[child][child2].Price].push(allData[child][child2].QTY);
+            }else{
+              PnSDataTable[child2][allData[child][child2].Price] = [];
+              PnSDataTable[child2][allData[child][child2].Price].push(allData[child][child2].QTY);
+            }
+            
+          }else{
+            PnSDataTable[child2] = [];
+            PnSDataTable[child2][allData[child][child2].Price]=[allData[child][child2].QTY];
+          }
         }
+        salesQTY.push(sum);
       }
-      salesQTY.push(sum);
     }
     console.log(typeSaleTable);
 
@@ -240,8 +245,10 @@ function getItemType(item){
     type += "SSD";
   }else if(item.substring(0, 2) == "75"){
     type += "DIMM";
-  }else{
+  }else if(item.substring(0,2) == "76" || item.substring(0,2) == "78"){
     type += "SODIMM";
+  }else {
+    type = "Other";
   }
   if(type != "SSD"){
     if(parseInt(item.substring(4,6)) <= 20 ){
@@ -344,44 +351,65 @@ function uploadData(){
   var fileInput = document.getElementById('dataFile');
   var dateInputTemp = document.getElementById('dateInput').value;
   var dateInput =  dateInputTemp.split("-")[1] + dateInputTemp.split("-")[2] + dateInputTemp.split("-")[0];
-  console.log("date value is" + dateInput);
-  var csvFile = fileInput.files[0];
-  var fr = new FileReader();
-  fr.onload = function(){
-    var dailyData = {};
-    var itemData = {};
-    var text = fr.result;
-
-    var lines = text.split('\n');
-    
-  //=========Star decode file===========================================================
-    for (var i = 1; i<lines.length-1; i++){
-      var line = lines[i].split('",');
-      //console.log("lines" + lines[i]);
-      var sku = line[3].split('"')[1];
-      sku = sku.split('.')[0];
-      var qty = parseInt(line[9].split('"')[1]);
-      var price = parseFloat(line[11].split('$')[1].replace(/,/g, '')) /Number(qty);
-      console.log("line " + sku);
-      console.log("qty " + qty);
-      console.log("Sales " + line[11].split('$')[1]);
-      console.log("Price " + price.toFixed(2));
-      if(dailyData[sku]){
-        dailyData[sku].QTY =  dailyData[sku].QTY + qty;
-      }else{
-        dailyData[sku]= {Price:price.toFixed(2), QTY:qty};
-      }
-    }
-    console.log("dailyData " + JSON.stringify(dailyData));
-    if(dailyData){
-      firebase.database().ref('Sales/CA/'+dateInput ).update(
-        dailyData
-      );
-      console.log("Daily date empty");
-    }
   
-  };
- 
-  fr.readAsText(csvFile);
+  var database = firebase.database().ref("Sales/CA/0");
+  database.once("value").then(function(snapshot) {
+      
+    var itemTable = snapshot.val();
+    
+    
+    console.log("date value is" + dateInput);
+    var csvFile = fileInput.files[0];
+    var fr = new FileReader();
+    fr.onload = function(){
+      var dailyData = {};
+      var itemData = {};
+      var text = fr.result;
+
+      var lines = text.split('\n');
+      
+    //=========Start decode file===========================================================
+      for (var i = 1; i<lines.length-1; i++){
+        var line = lines[i].split('",');
+        //console.log("lines" + lines[i]);
+        var sku = line[3].split('"')[1];
+        sku = sku.split('.')[0];
+        var qty = parseInt(line[9].split('"')[1]);
+        var price = parseFloat(line[11].split('$')[1].replace(/,/g, '')) /Number(qty);
+        console.log("line " + sku);
+        console.log("qty " + qty);
+        console.log("Sales " + line[11].split('$')[1]);
+        console.log("Price " + price.toFixed(2));
+        if(dailyData[sku]){
+          dailyData[sku].QTY = dailyData[sku].QTY + qty;
+        }else{
+          dailyData[sku] = {Price:price.toFixed(2), QTY:qty};
+        }
+
+      }
+
+      for(var element in itemTable){
+          if(!dailyData[element]){
+            console.log("element in itemTable not in dailyData " +  element);
+            dailyData[element] = {Price:itemTable[element].Price, QTY:0}
+          }
+        }
+      console.log("dailyData " + JSON.stringify(dailyData));
+      if(dailyData){
+        firebase.database().ref('Sales/CA/'+dateInput ).set(
+          dailyData
+        );
+
+        firebase.database().ref('Sales/CA').update({
+          0:dailyData
+        });
+
+        console.log("Daily date not empty");
+      }
+    
+    };
+   
+    fr.readAsText(csvFile);
+  });
   return false;
 }
