@@ -452,7 +452,14 @@ function updateSignInStatus(isSignedIn) {
             for (i = 0; i < range.values.length; i++) {
               var row = range.values[i];
               // Print columns A and E, which correspond to indices 0 and 4.
-              localInvTable[row[3]]={ID:row[0], localInv:row[4]};
+              if (!localInvTable[row[3]]){
+                localInvTable[row[3]]={ID:row[0], localInv:row[4]};
+              }else{
+                if(parseInt(localInvTable[row[3]].localInv) < parseInt(row[4])){
+                   console.log("SKU: "+ row[3] + localInvTable[row[3]].ID+" "+ localInvTable[row[3]].localInv + row[0]+" "+ row[4]);
+                   localInvTable[row[3]]={ID:row[0], localInv:row[4]};
+                 }
+              }
             }
             console.log("localInvTable" + localInvTable["75TT13NU2R8-8G"]);
           } else {
@@ -475,7 +482,13 @@ function updateSignInStatus(isSignedIn) {
               var row = range.values[i];
              
               // Print columns A and E, which correspond to indices 0 and 4.
-              localInvTable[row[3]]={ID:row[0], localInv:row[9]};
+              if (!localInvTable[row[3]]){
+                localInvTable[row[3]]={ID:row[0], localInv:row[9]};
+              }else{
+                if(parseInt(localInvTable[row[3]].localInv) < parseInt(row[9])){
+                   localInvTable[row[3]]={ID:row[0], localInv:row[9]};
+                 }
+              }
             }
             console.log("localSInvTable" + localInvTable["71TT16EUL2R8-8G"]);
           } else {
